@@ -16,17 +16,20 @@ import { focus } from '@editorjs/caret';
 export default class BlockEvents extends Module {
   /**
    * All keydowns on Block
+   * 블록의 모든 키 다운 이벤트
    *
    * @param {KeyboardEvent} event - keydown
    */
   public keydown(event: KeyboardEvent): void {
     /**
      * Run common method for all keydown events
+     * 모든 키 다운 이벤트에 대한 공통 메서드 실행
      */
     this.beforeKeydownProcessing(event);
 
     /**
      * Fire keydown processor by event.keyCode
+     * event.keyCode에 따라 키 다운 프로세서 실행
      */
     switch (event.keyCode) {
       case _.keyCodes.BACKSPACE:
@@ -58,8 +61,10 @@ export default class BlockEvents extends Module {
 
     /**
      * We check for "key" here since on different keyboard layouts "/" can be typed as "Shift + 7" etc
+     * 여기서 "key"를 확인하는 이유는 다른 키보드 레이아웃에서 "/"가 "Shift + 7" 등으로 입력될 수 있기 때문입니다
      *
      * @todo probably using "beforeInput" event would be better here
+     * @todo "beforeInput" 이벤트를 사용하는 것이 여기서 더 좋을 것 같습니다
      */
     if (event.key === '/' && !event.ctrlKey && !event.metaKey) {
       this.slashPressed(event);
@@ -68,6 +73,9 @@ export default class BlockEvents extends Module {
     /**
      * If user pressed "Ctrl + /" or "Cmd + /" — open Block Settings
      * We check for "code" here since on different keyboard layouts there can be different keys in place of Slash.
+     * 
+     * 사용자가 "Ctrl + /" 또는 "Cmd + /"를 누르면 블록 설정 열기
+     * 다른 키보드 레이아웃에서는 슬래시 대신 다른 키가 있을 수 있으므로 "code"를 확인합니다.
      */
     if (event.code === 'Slash' && (event.ctrlKey || event.metaKey)) {
       event.preventDefault();
@@ -77,12 +85,14 @@ export default class BlockEvents extends Module {
 
   /**
    * Fires on keydown before event processing
+   * 이벤트 처리 전 키 다운 시 발생
    *
    * @param {KeyboardEvent} event - keydown
    */
   public beforeKeydownProcessing(event: KeyboardEvent): void {
     /**
      * Do not close Toolbox on Tabs or on Enter with opened Toolbox
+     * 탭이나 열린 툴박스에서 엔터키를 누를 때 툴박스를 닫지 않습니다
      */
     if (!this.needToolbarClosing(event)) {
       return;
@@ -92,12 +102,17 @@ export default class BlockEvents extends Module {
      * When user type something:
      *  - close Toolbar
      *  - clear block highlighting
+     * 
+     * 사용자가 무언가를 입력할 때:
+     *  - 툴바 닫기
+     *  - 블록 하이라이트 지우기
      */
     if (_.isPrintableKey(event.keyCode)) {
       this.Editor.Toolbar.close();
 
       /**
        * Allow to use shortcuts with selected blocks
+       * 선택된 블록으로 단축키 사용 허용
        *
        * @type {boolean}
        */
@@ -113,12 +128,17 @@ export default class BlockEvents extends Module {
    * Key up on Block:
    * - shows Inline Toolbar if something selected
    * - shows conversion toolbar with 85% of block selection
+   * 
+   * 블록의 키 업:
+   * - 무언가 선택되면 인라인 툴바 표시
+   * - 블록 선택의 85%로 변환 툴바 표시
    *
    * @param {KeyboardEvent} event - keyup event
    */
   public keyup(event: KeyboardEvent): void {
     /**
      * If shift key was pressed some special shortcut is used (eg. cross block selection via shift + arrows)
+     * Shift 키가 눌렸다면 특별한 단축키가 사용됨 (예: Shift + 화살표로 블록 간 선택)
      */
     if (event.shiftKey) {
       return;
@@ -126,12 +146,14 @@ export default class BlockEvents extends Module {
 
     /**
      * Check if editor is empty on each keyup and add special css class to wrapper
+     * 각 키 업마다 에디터가 비어있는지 확인하고 래퍼에 특별한 CSS 클래스 추가
      */
     this.Editor.UI.checkEmptiness();
   }
 
   /**
    * Add drop target styles
+   * 드롭 대상 스타일 추가
    *
    * @param {DragEvent} event - drag over event
    */
@@ -143,6 +165,7 @@ export default class BlockEvents extends Module {
 
   /**
    * Remove drop target style
+   * 드롭 대상 스타일 제거
    *
    * @param {DragEvent} event - drag leave event
    */
@@ -155,6 +178,9 @@ export default class BlockEvents extends Module {
   /**
    * Copying selected blocks
    * Before putting to the clipboard we sanitize all blocks and then copy to the clipboard
+   * 
+   * 선택된 블록 복사
+   * 클립보드에 넣기 전에 모든 블록을 정리하고 클립보드에 복사
    *
    * @param {ClipboardEvent} event - clipboard event
    */
@@ -171,6 +197,7 @@ export default class BlockEvents extends Module {
 
   /**
    * Copy and Delete selected Blocks
+   * 선택된 블록 복사 및 삭제
    *
    * @param {ClipboardEvent} event - clipboard event
    */
@@ -186,6 +213,7 @@ export default class BlockEvents extends Module {
 
       /**
        * Insert default block in place of removed ones
+       * 제거된 블록 위치에 기본 블록 삽입
        */
       const insertedBlock = BlockManager.insertDefaultBlockAtIndex(selectionPositionIndex, true);
 
@@ -198,6 +226,8 @@ export default class BlockEvents extends Module {
 
   /**
    * Tab pressed inside a Block.
+   *
+   * 블록 내에서 탭 키를 눌렀을 때
    *
    * @param {KeyboardEvent} event - keydown
    */
@@ -234,6 +264,8 @@ export default class BlockEvents extends Module {
   /**
    * '/' keydown inside a Block
    *
+   * 블록 내에서 '/' 키를 눌렀을 때
+   *
    * @param event - keydown
    */
   private slashPressed(event: KeyboardEvent): void {
@@ -263,6 +295,8 @@ export default class BlockEvents extends Module {
 
   /**
    * ENTER pressed on block
+   *
+   * 블록에서 엔터 키를 눌렀을 때
    *
    * @param {KeyboardEvent} event - keydown
    */
@@ -335,6 +369,8 @@ export default class BlockEvents extends Module {
 
   /**
    * Handle backspace keydown on Block
+   *
+   * 블록에서 백스페이스 키를 눌렀을 때
    *
    * @param {KeyboardEvent} event - keydown
    */
@@ -423,6 +459,10 @@ export default class BlockEvents extends Module {
    * Removes char after the caret.
    * If caret is at the end of the block, merge next block with current
    *
+   * 블록에서 삭제 키를 눌렀을 때
+   * 커서 뒤의 문자를 삭제합니다.
+   * 커서가 블록의 끝에 있는 경우, 다음 블록을 현재 블록과 병합합니다.
+   *
    * @param {KeyboardEvent} event - keydown
    */
   private delete(event: KeyboardEvent): void {
@@ -503,6 +543,8 @@ export default class BlockEvents extends Module {
   /**
    * Merge passed Blocks
    *
+   * 블록 병합
+   *
    * @param targetBlock - to which Block we want to merge
    * @param blockToMerge - what Block we want to merge
    */
@@ -524,6 +566,8 @@ export default class BlockEvents extends Module {
 
   /**
    * Handle right and down keyboard keys
+   *
+   * 오른쪽 및 아래쪽 키보드 키 처리
    *
    * @param {KeyboardEvent} event - keyboard event
    */
@@ -586,6 +630,8 @@ export default class BlockEvents extends Module {
   /**
    * Handle left and up keyboard keys
    *
+   * 왼쪽 및 위쪽 키보드 키 처리
+   *
    * @param {KeyboardEvent} event - keyboard event
    */
   private arrowLeftAndUp(event: KeyboardEvent): void {
@@ -647,6 +693,8 @@ export default class BlockEvents extends Module {
 
   /**
    * Cases when we need to close Toolbar
+   *
+   * 툴바를 닫아야 하는 경우
    *
    * @param {KeyboardEvent} event - keyboard event
    */

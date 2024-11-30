@@ -3,6 +3,11 @@
  * @classdesc Manage editor`s blocks storage and appearance
  * @module BlockManager
  * @version 2.0.0
+ * 
+ * @class BlockManager
+ * @classdesc 에디터의 블록 저장소와 외관을 관리합니다
+ * @module 블록 관리자
+ * @version 2.0.0
  */
 import Block, { BlockToolAPI } from '../block';
 import Module from '../__module';
@@ -30,6 +35,7 @@ import PromiseQueue from '../utils/promise-queue';
 export default class BlockManager extends Module {
   /**
    * Returns current Block index
+   * 현재 블록 인덱스를 반환합니다
    *
    * @returns {number}
    */
@@ -39,8 +45,10 @@ export default class BlockManager extends Module {
 
   /**
    * Set current Block index and fire Block lifecycle callbacks
+   * 현재 블록 인덱스를 설정하고 블록 생명주기 콜백을 실행합니다
    *
    * @param {number} newIndex - index of Block to set as current
+   * @param {number} newIndex - 현재로 설정할 블록의 인덱스
    */
   public set currentBlockIndex(newIndex: number) {
     this._currentBlockIndex = newIndex;
@@ -48,6 +56,7 @@ export default class BlockManager extends Module {
 
   /**
    * returns first Block
+   * 첫 번째 블록을 반환합니다
    *
    * @returns {Block}
    */
@@ -57,6 +66,7 @@ export default class BlockManager extends Module {
 
   /**
    * returns last Block
+   * 마지막 블록을 반환합니다
    *
    * @returns {Block}
    */
@@ -66,6 +76,7 @@ export default class BlockManager extends Module {
 
   /**
    * Get current Block instance
+   * 현재 블록 인스턴스를 가져옵니다
    *
    * @returns {Block}
    */
@@ -75,8 +86,10 @@ export default class BlockManager extends Module {
 
   /**
    * Set passed Block as a current
+   * 전달된 블록을 현재 블록으로 설정합니다
    *
    * @param block - block to set as a current
+   * @param block - 현재로 설정할 블록
    */
   public set currentBlock(block: Block) {
     this.currentBlockIndex = this.getBlockIndex(block);
@@ -84,6 +97,7 @@ export default class BlockManager extends Module {
 
   /**
    * Returns next Block instance
+   * 다음 블록 인스턴스를 반환합니다
    *
    * @returns {Block|null}
    */
@@ -99,6 +113,7 @@ export default class BlockManager extends Module {
 
   /**
    * Return first Block with inputs after current Block
+   * 현재 블록 이후의 첫 번째 입력이 있는 블록을 반환합니다
    *
    * @returns {Block | undefined}
    */
@@ -110,6 +125,7 @@ export default class BlockManager extends Module {
 
   /**
    * Return first Block with inputs before current Block
+   * 현재 블록 이전의 첫 번째 입력이 있는 블록을 반환합니다
    *
    * @returns {Block | undefined}
    */
@@ -121,6 +137,7 @@ export default class BlockManager extends Module {
 
   /**
    * Returns previous Block instance
+   * 이전 블록 인스턴스를 반환합니다
    *
    * @returns {Block|null}
    */
@@ -136,6 +153,7 @@ export default class BlockManager extends Module {
 
   /**
    * Get array of Block instances
+   * 블록 인스턴스 배열을 가져옵니다
    *
    * @returns {Block[]} {@link Blocks#array}
    */
@@ -145,6 +163,7 @@ export default class BlockManager extends Module {
 
   /**
    * Check if each Block is empty
+   * 각 블록이 비어있는지 확인합니다
    *
    * @returns {boolean}
    */
@@ -154,6 +173,7 @@ export default class BlockManager extends Module {
 
   /**
    * Index of current working block
+   * 현재 작업 중인 블록의 인덱스
    *
    * @type {number}
    */
@@ -161,6 +181,7 @@ export default class BlockManager extends Module {
 
   /**
    * Proxy for Blocks instance {@link Blocks}
+   * 블록 인스턴스에 대한 프록시 {@link Blocks}
    *
    * @type {Proxy}
    * @private
@@ -170,6 +191,9 @@ export default class BlockManager extends Module {
   /**
    * Should be called after Editor.UI preparation
    * Define this._blocks property
+   * 
+   * 에디터 UI 준비 후 호출되어야 합니다
+   * this._blocks 속성을 정의합니다
    */
   public prepare(): void {
     const blocks = new Blocks(this.Editor.UI.nodes.redactor);
@@ -183,6 +207,17 @@ export default class BlockManager extends Module {
      *
      * block = this._blocks[0];
      * @todo proxy the enumerate method
+     * @type {Proxy}
+     * @private
+     * 
+     * set/get [] 연산자를 오버로드하기 위해 Proxy를 사용해야 합니다.
+     * 이를 통해 배열과 유사한 구문으로 블록에 접근할 수 있습니다
+     *
+     * @example
+     * this._blocks[0] = new Block(...);
+     *
+     * block = this._blocks[0];
+     * @todo 열거 메서드 프록시 구현
      * @type {Proxy}
      * @private
      */
@@ -201,6 +236,7 @@ export default class BlockManager extends Module {
 
   /**
    * Toggle read-only state
+   * 읽기 전용 상태를 전환합니다
    *
    * If readOnly is true:
    *  - Unbind event handlers from created Blocks
@@ -209,6 +245,7 @@ export default class BlockManager extends Module {
    *  - Bind event handlers to all existing Blocks
    *
    * @param {boolean} readOnlyEnabled - "read only" state
+   * @param {boolean} readOnlyEnabled - 읽기 전용 상태
    */
   public toggleReadOnly(readOnlyEnabled: boolean): void {
     if (!readOnlyEnabled) {
@@ -220,6 +257,7 @@ export default class BlockManager extends Module {
 
   /**
    * Creates Block instance by tool name
+   * 도구 이름으로 블록 인스턴스를 생성합니다
    *
    * @param {object} options - block creation options
    * @param {string} options.tool - tools passed in editor config {@link EditorConfig#tools}
@@ -255,6 +293,7 @@ export default class BlockManager extends Module {
 
   /**
    * Insert new block into _blocks
+   * 새로운 블록을 _blocks에 삽입합니다
    *
    * @param {object} options - insert options
    * @param {string} [options.id] - block's unique id
@@ -325,6 +364,7 @@ export default class BlockManager extends Module {
 
   /**
    * Inserts several blocks at once
+   * 여러 블록을 한 번에 삽입합니다
    *
    * @param blocks - blocks to insert
    * @param index - index where to insert
@@ -335,7 +375,7 @@ export default class BlockManager extends Module {
 
   /**
    * Update Block data.
-   *
+   * 
    * Currently we don't have an 'update' method in the Tools API, so we just create a new block with the same id and type
    * Should not trigger 'block-removed' or 'block-added' events.
    *
@@ -372,6 +412,8 @@ export default class BlockManager extends Module {
 
   /**
    * Replace passed Block with the new one with specified Tool and data
+   * 
+   * 전달된 블록을 지정된 도구와 데이터로 새로운 블록으로 교체합니다
    *
    * @param block - block to replace
    * @param newTool - new Tool name
@@ -390,6 +432,8 @@ export default class BlockManager extends Module {
 
   /**
    * Insert pasted content. Call onPaste callback after insert.
+   * 
+   * 붙여넣은 내용을 삽입하고 삽입 후 onPaste 콜백을 호출합니다
    *
    * @param {string} toolName - name of Tool to insert
    * @param {PasteEvent} pasteEvent - pasted data
@@ -425,6 +469,8 @@ export default class BlockManager extends Module {
 
   /**
    * Insert new default block at passed index
+   * 
+   * 전달된 인덱스에 새로운 기본 블록을 삽입합니다
    *
    * @param {number} index - index where Block should be inserted
    * @param {boolean} needToFocus - if true, updates current Block index
@@ -455,6 +501,8 @@ export default class BlockManager extends Module {
 
   /**
    * Always inserts at the end
+   * 
+   * 항상 끝에 삽입합니다
    *
    * @returns {Block}
    */
@@ -472,6 +520,8 @@ export default class BlockManager extends Module {
 
   /**
    * Merge two blocks
+   * 
+   * 두 블록을 병합합니다
    *
    * @param {Block} targetBlock - previous block will be append to this block
    * @param {Block} blockToMerge - block that will be merged with target block
@@ -518,6 +568,8 @@ export default class BlockManager extends Module {
 
   /**
    * Remove passed Block
+   * 
+   * 전달된 블록을 제거합니다
    *
    * @param block - Block to remove
    * @param addLastBlock - if true, adds new default block at the end. @todo remove this logic and use event-bus instead
@@ -592,6 +644,10 @@ export default class BlockManager extends Module {
    * Attention!
    * After removing insert the new default typed Block and focus on it
    * Removes all blocks
+   * 
+   * 주의!
+   * 제거 후 새로운 기본 유형의 블록을 삽입하고 포커스를 설정합니다
+   * 모든 블록을 제거합니다
    */
   public removeAllBlocks(): void {
     for (let index = this.blocks.length - 1; index >= 0; index--) {
@@ -607,6 +663,10 @@ export default class BlockManager extends Module {
    * Split current Block
    * 1. Extract content from Caret position to the Block`s end
    * 2. Insert a new Block below current one with extracted content
+   * 
+   * 현재 블록을 분할합니다
+   * 1. Caret 위치에서 블록의 끝까지 내용을 추출합니다
+   * 2. 추출된 내용으로 새로운 블록을 삽입합니다
    *
    * @returns {Block}
    */
@@ -633,6 +693,8 @@ export default class BlockManager extends Module {
 
   /**
    * Returns Block by passed index
+   * 
+   * 전달된 인덱스에 해당하는 블록을 반환합니다
    *
    * If we pass -1 as index, the last block will be returned
    * There shouldn't be a case when there is no blocks at all — at least one always should exist
@@ -641,6 +703,8 @@ export default class BlockManager extends Module {
 
   /**
    * Returns Block by passed index.
+   * 
+   * 전달된 인덱스에 해당하는 블록을 반환합니다
    *
    * Could return undefined if there is no block with such index
    */
@@ -648,6 +712,8 @@ export default class BlockManager extends Module {
 
   /**
    * Returns Block by passed index
+   * 
+   * 전달된 인덱스에 해당하는 블록을 반환합니다
    *
    * @param {number} index - index to get. -1 to get last
    * @returns {Block}
@@ -662,6 +728,8 @@ export default class BlockManager extends Module {
 
   /**
    * Returns an index for passed Block
+   * 
+   * 전달된 블록의 인덱스를 반환합니다
    *
    * @param block - block to find index
    */
@@ -671,6 +739,8 @@ export default class BlockManager extends Module {
 
   /**
    * Returns the Block by passed id
+   * 
+   * 전달된 id에 해당하는 블록을 반환합니다
    *
    * @param id - id of block to get
    * @returns {Block}
@@ -681,6 +751,8 @@ export default class BlockManager extends Module {
 
   /**
    * Get Block instance by html element
+   * 
+   * HTML 요소에 해당하는 블록 인스턴스를 반환합니다
    *
    * @param {Node} element - html element to get Block by
    */
@@ -701,6 +773,9 @@ export default class BlockManager extends Module {
   /**
    * 1) Find first-level Block from passed child Node
    * 2) Mark it as current
+   * 
+   * 1) 전달된 자식 노드에서 첫 번째 수준의 블록을 찾습니다
+   * 2) 이를 현재 블록으로 표시합니다
    *
    * @param {Node} childNode - look ahead from this node.
    * @returns {Block | undefined} can return undefined in case when the passed child note is not a part of the current editor instance
@@ -749,6 +824,8 @@ export default class BlockManager extends Module {
 
   /**
    * Return block which contents passed node
+   * 
+   * 전달된 노드의 내용을 포함하는 블록을 반환합니다
    *
    * @param {Node} childNode - node to get Block by
    * @returns {Block}
@@ -772,6 +849,8 @@ export default class BlockManager extends Module {
 
   /**
    * Swap Blocks Position
+   * 
+   * 블록의 위치를 교환합니다
    *
    * @param {number} fromIndex - index of first block
    * @param {number} toIndex - index of second block
@@ -787,6 +866,8 @@ export default class BlockManager extends Module {
 
   /**
    * Move a block to a new index
+   * 
+   * 블록을 새로운 인덱스로 이동합니다
    *
    * @param {number} toIndex - index where to move Block
    * @param {number} fromIndex - index of Block to move
@@ -823,6 +904,9 @@ export default class BlockManager extends Module {
   /**
    * Converts passed Block to the new Tool
    * Uses Conversion Config
+   * 
+   * 전달된 블록을 새로운 도구로 변환합니다
+   * 변환 구성 사용
    *
    * @param blockToConvert - Block that should be converted
    * @param targetToolName - name of the Tool to convert to
@@ -879,6 +963,8 @@ export default class BlockManager extends Module {
   /**
    * Sets current Block Index -1 which means unknown
    * and clear highlights
+   * 
+   * 현재 블록 인덱스를 -1로 설정하고 하이라이트를 지웁니다
    */
   public unsetCurrentBlock(): void {
     this.currentBlockIndex = -1;
@@ -886,6 +972,8 @@ export default class BlockManager extends Module {
 
   /**
    * Clears Editor
+   * 
+   * 에디터를 초기화합니다
    *
    * @param {boolean} needToAddDefaultBlock - 1) in internal calls (for example, in api.blocks.render)
    *                                             we don't need to add an empty default block
@@ -917,6 +1005,9 @@ export default class BlockManager extends Module {
   /**
    * Cleans up all the block tools' resources
    * This is called when editor is destroyed
+   * 
+   * 모든 블록 도구의 리소스를 정리합니다
+   * 에디터가 파괴될 때 호출됩니다
    */
   public async destroy(): Promise<void> {
     await Promise.all(this.blocks.map((block) => {
@@ -926,6 +1017,8 @@ export default class BlockManager extends Module {
 
   /**
    * Bind Block events
+   * 
+   * 블록 이벤트를 바인딩합니다
    *
    * @param {Block} block - Block to which event should be bound
    */
@@ -957,6 +1050,8 @@ export default class BlockManager extends Module {
 
   /**
    * Disable mutable handlers and bindings
+   * 
+   * 가변 핸들러와 바인딩을 비활성화합니다
    */
   private disableModuleBindings(): void {
     this.readOnlyMutableListeners.clearAll();
@@ -964,6 +1059,8 @@ export default class BlockManager extends Module {
 
   /**
    * Enables all module handlers and bindings for all Blocks
+   * 
+   * 모든 블록에 대한 모듈 핸들러와 바인딩을 활성화합니다
    */
   private enableModuleBindings(): void {
     /** Cut event */
@@ -980,6 +1077,8 @@ export default class BlockManager extends Module {
 
   /**
    * Validates that the given index is not lower than 0 or higher than the amount of blocks
+   * 
+   * 주어진 인덱스가 0보다 작거나 블록의 수보다 큰지 확인합니다
    *
    * @param {number} index - index of blocks array to validate
    * @returns {boolean}
@@ -990,6 +1089,8 @@ export default class BlockManager extends Module {
 
   /**
    * Block mutation callback
+   * 
+   * 블록 변형 콜백
    *
    * @param mutationType - what happened with block
    * @param block - mutated block
